@@ -1496,8 +1496,5 @@ namespace Scacchi.Modello
         //Then
         Assert.True(esito);
         }
-
-
-
     }
 }

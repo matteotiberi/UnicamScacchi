@@ -10,6 +10,25 @@ namespace Scacchi.Modello.Pezzi {
         {
             this.colore = colore;    
         }
+
+        public override string ToString(){
+            return $"Pedone {Colore}";
+        }
+
+        
+        public override bool Equals(Object altroOggetto){
+            if(!(altroOggetto is Pedone)){
+                return false;
+            }
+
+            return ((Pedone) altroOggetto)?.Colore == this.colore;
+        }
+
+        public override int GetHashCode(){
+            //va anche a invocare equals, quindi in teoria ci basta il tipo
+            return Colore.GetHashCode();
+        }
+
         public Colore Colore {
             get {
                 return colore;
