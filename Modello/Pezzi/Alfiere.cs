@@ -4,21 +4,14 @@ using System.Linq;
 
 namespace Scacchi.Modello.Pezzi
 {
-    public class Alfiere : IPezzo
+
+    public class Alfiere : Pezzo
     {
-        private readonly Colore colore;
-        public Alfiere(Colore colore)
+        public Alfiere(Colore colore) : base(colore)
         {
-            this.colore = colore;
         }
-        public Colore Colore
-        {
-            get
-            {
-                return colore;
-            }
-        }
-        public bool PuòMuovere(
+
+        public override bool PuòMuovere(
             Colonna colonnaPartenza,
             Traversa traversaPartenza,
             Colonna colonnaArrivo,
@@ -52,7 +45,7 @@ namespace Scacchi.Modello.Pezzi
                             }
                             else
                             {
-                                if (casaArrivo.PezzoPresente?.Colore != this.colore)
+                                if (casaArrivo.PezzoPresente?.Colore != this.Colore)
                                     return true;
                                 else
                                     return false;
@@ -68,7 +61,7 @@ namespace Scacchi.Modello.Pezzi
                             }
                             else
                             {
-                                if (casaArrivo.PezzoPresente?.Colore != this.colore)
+                                if (casaArrivo.PezzoPresente?.Colore != this.Colore)
                                     return true;
                                 else
                                     return false;
@@ -89,7 +82,7 @@ namespace Scacchi.Modello.Pezzi
                             }
                             else
                             {
-                                if (casaArrivo.PezzoPresente?.Colore != this.colore)
+                                if (casaArrivo.PezzoPresente?.Colore != this.Colore)
                                     return true;
                                 else
                                     return false;
@@ -105,7 +98,7 @@ namespace Scacchi.Modello.Pezzi
                             }
                             else
                             {
-                                if (casaArrivo.PezzoPresente?.Colore != this.colore)
+                                if (casaArrivo.PezzoPresente?.Colore != this.Colore)
                                     return true;
                                 else
                                     return false;

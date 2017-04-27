@@ -3,57 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Scacchi.Modello.Pezzi {
-    public class Pedone : IPezzo
+    public class Pedone : Pezzo
     {
-        private readonly Colore colore;
-        public Pedone(Colore colore)
+        public Pedone(Colore colore) : base(colore)
         {
-            this.colore = colore;    
         }
 
-        public override string ToString(){
+        public override string ToString() {
             return $"Pedone {Colore}";
         }
 
-        
-        public override bool Equals(Object altroOggetto){
-            if(!(altroOggetto is Pedone)){
-                return false;
-            }
-
-            return ((Pedone) altroOggetto)?.Colore == this.colore;
-        }
-
-        public override int GetHashCode(){
-            //va anche a invocare equals, quindi in teoria ci basta il tipo
+        public override int GetHashCode() {
             return Colore.GetHashCode();
         }
 
-        public Colore Colore {
-            get {
-                return colore;
-            }
+        public override bool Equals(object altroOggetto){
+            if (!(altroOggetto is Pedone))
+                return false;
+
+            return ((Pedone) altroOggetto)?.Colore == this.Colore;
         }
-        public bool PuòMuovere(
+        
+        public override bool PuòMuovere(
             Colonna colonnaPartenza,
             Traversa traversaPartenza,
             Colonna colonnaArrivo,
             Traversa traversaArrivo,
             IEnumerable<ICasa> listaCase = null)
         {
+            bool puòMuovere = base.PuòMuovere(colonnaPartenza, traversaPartenza, colonnaArrivo, traversaArrivo, listaCase);
+            if (!puòMuovere)
+                return false;
+
             listaCase = listaCase??Enumerable.Empty<ICasa>();
 
                 ICasa casaPartenza = listaCase.SingleOrDefault(casa => casa.Colonna == colonnaPartenza 
                 && casa.Traversa == traversaPartenza 
                 && casa.PezzoPresente == this);
-                if ((this.colore == Colore.Bianco
+                if ((this.Colore == Colore.Bianco
                      && colonnaArrivo - colonnaPartenza == 1 
-                     && traversaArrivo-traversaPartenza == 1) || (this.colore == Colore.Nero 
+                     && traversaArrivo-traversaPartenza == 1) || (this.Colore == Colore.Nero 
                      && colonnaPartenza - colonnaArrivo == 1 
                      && traversaPartenza-traversaArrivo == 1)){
                     ICasa casaArrivo = listaCase.SingleOrDefault( casa => casa.Colonna==colonnaArrivo 
                     && casa.Traversa == traversaArrivo);
-                    if (casaArrivo.PezzoPresente.Colore != this.colore) return true;
+                    if (casaArrivo.PezzoPresente.Colore != this.Colore) return true;
                 }
             
             var stessaColonna = colonnaPartenza == colonnaArrivo;
