@@ -2,11 +2,18 @@ using System;
 using System.Collections.Generic;
 
 namespace Scacchi.Modello{
-    public interface ITavolo{
-        void RiceviGiocatori(String nomeBianco,String nomeNero);
+    public interface ITavolo {
+        void RiceviGiocatori(string nomeBianco, string nomeNero);
+        Dictionary<Colore,IGiocatore> Giocatori {get;}
         void AvviaPartita();
 
+        void FinisciPartita();
+        IScacchiera Scacchiera { get; }
+        IOrologio Orologio { get; }
         void InserisciMossa(string mossa);
-        Dictionary<Colore,IGiocatore> Giocatori{get;}
+
+        event EventHandler<Colore> Vittoria;
+
+
     }
 }

@@ -1,40 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Scacchi.Modello;
+using Scacchi.Modello.Pezzi;
 
 namespace Scacchi.Modello
 {
     public class Tavolo : ITavolo
     {
-        public Dictionary<Colore, IGiocatore> Giocatori
-        {
-            get;
-            private set;
-        }
-        private readonly IScacchiera scacchiera;
-        private readonly IOrologio orologio;
+
 
         public Tavolo(IScacchiera scacchiera, IOrologio orologio)
         {
-            this.scacchiera = scacchiera;
-            this.orologio = orologio;
-
+            Scacchiera = scacchiera;
+            Orologio = orologio;
         }
+        public Dictionary<Colore, IGiocatore> Giocatori { get; private set; }
+
+        public IScacchiera Scacchiera { get; private set; }
+        public IOrologio Orologio { get; private set; }
+
+        public event EventHandler<Colore> Vittoria;
+
         public void AvviaPartita()
         {
             if (Giocatori == null)
-            {
-                throw new InvalidOperationException("Attenzione, prima devi indicare il nome dei giocatori");
-            }
-            orologio.Accendi();
-            orologio.Avvia();
+                throw new InvalidOperationException("Attenzione, prima devi indicare i nomi dei giocatori!");
+
+            Orologio.Accendi();
+            Orologio.Avvia();
+            Orologio.TempoScaduto += (Orologio, colore) => {
+                if(colore == Colore.Bianco)
+                    Vittoria.Invoke(Orologio, Colore.Nero);
+                else
+                    Vittoria.Invoke(Orologio, Colore.Bianco);
+            };
         }
 
-        public void RiceviGiocatori(String nomeBianco, String nomeNero)
-        {
-            Giocatori = new Dictionary<Colore, IGiocatore>();
-            Giocatori.Add(Colore.Bianco, new Giocatore(nomeBianco));
-            Giocatori.Add(Colore.Nero, new Giocatore(nomeNero));
+        public void FinisciPartita() {
+            Orologio.Reset();
+            Scacchiera = new Scacchiera();
+            Giocatori = null;
         }
 
         public void InserisciMossa(string mossa)
