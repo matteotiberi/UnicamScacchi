@@ -10,15 +10,18 @@ namespace Scacchi.Modello
     {
 
 
-        public Tavolo(IScacchiera scacchiera, IOrologio orologio)
+        public Tavolo(IScacchiera scacchiera, IOrologio orologio, IBloccoNote bloccoNote)
         {
             Scacchiera = scacchiera;
             Orologio = orologio;
+            BloccoNote = bloccoNote;
         }
         public Dictionary<Colore, IGiocatore> Giocatori { get; private set; }
 
         public IScacchiera Scacchiera { get; private set; }
         public IOrologio Orologio { get; private set; }
+
+        public IBloccoNote BloccoNote {get; private set;}
 
         public event EventHandler<Colore> Vittoria;
 
@@ -45,9 +48,15 @@ namespace Scacchi.Modello
 
         public void InserisciMossa(string mossa)
         {
+            BloccoNote.ScriviMossa(mossa);
             Coordinata partenza = interpretaCoordinataCasa(mossa.Substring(0,2));
             Coordinata arrivo = interpretaCoordinataCasa(mossa.Substring(4,2));
             
+        }
+
+        public void RiceviGiocatori(string nomeBianco, string nomeNero)
+        {
+            throw new NotImplementedException();
         }
 
         internal Coordinata interpretaCoordinataCasa(string mossa){
