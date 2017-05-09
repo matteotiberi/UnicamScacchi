@@ -16,8 +16,9 @@ namespace Scacchi.Modello
             Orologio = orologio;
             BloccoNote = bloccoNote;
         }
-        public Dictionary<Colore, IGiocatore> Giocatori { get; private set; }
+        public IReadOnlyDictionary<Colore, IGiocatore> Giocatori { get { return giocatori; } }
 
+        public IBloccoNote BloccoNote{ get; private set;}
         public IScacchiera Scacchiera { get; private set; }
         public IOrologio Orologio { get; private set; }
 
@@ -43,15 +44,48 @@ namespace Scacchi.Modello
         public void FinisciPartita() {
             Orologio.Reset();
             Scacchiera = new Scacchiera();
-            Giocatori = null;
+            giocatori = null;
         }
 
         public void InserisciMossa(string mossa)
         {
+<<<<<<< HEAD
             BloccoNote.ScriviMossa(mossa);
             Coordinata partenza = interpretaCoordinataCasa(mossa.Substring(0,2));
             Coordinata arrivo = interpretaCoordinataCasa(mossa.Substring(4,2));
             
+=======
+
+            Coordinata partenza = InterpretaCoordinataCasa(mossa.Substring(0, 2));
+            Coordinata arrivo = InterpretaCoordinataCasa(mossa.Substring(3, 2));
+            ICasa casaPartenza = Scacchiera[partenza.Colonna, partenza.Traversa];
+            ICasa casaArrivo = Scacchiera[arrivo.Colonna, arrivo.Traversa];
+
+            if (casaPartenza.PezzoPresente == null ||
+                casaPartenza.PezzoPresente?.Colore != Orologio.TurnoAttuale ||
+                casaArrivo.PezzoPresente?.Colore == Orologio.TurnoAttuale ||
+                casaPartenza.PezzoPresente?.PuòMuovere(partenza.Colonna, partenza.Traversa,
+                arrivo.Colonna, arrivo.Traversa, Scacchiera.Case) == false
+                )
+            {
+                throw new InvalidOperationException("Mossa non valida");
+            }
+
+            Scacchiera.SpostaPezzo(casaPartenza, casaArrivo);
+            BloccoNote.ScriviMossa(mossa);
+            //Controllo che il re non sia stato mangiato
+            Colore coloreControlloSconfitta;
+            if(Orologio.TurnoAttuale == Colore.Bianco) {
+                coloreControlloSconfitta = Colore.Nero;
+            } else {
+                coloreControlloSconfitta = Colore.Bianco;
+            }
+            bool reInVita = Scacchiera.ReInVita(coloreControlloSconfitta);
+            if(!reInVita) {
+                Vittoria.Invoke(Scacchiera, Orologio.TurnoAttuale);
+            }
+            Orologio.FineTurno();
+>>>>>>> upstream/master
         }
 
         public void RiceviGiocatori(string nomeBianco, string nomeNero)
@@ -59,11 +93,21 @@ namespace Scacchi.Modello
             throw new NotImplementedException();
         }
 
+<<<<<<< HEAD
         internal Coordinata interpretaCoordinataCasa(string mossa){
             Enum.TryParse<Colonna>(mossa.Substring(0,1), out Colonna colonna);
             int.TryParse(mossa.Substring(1,1), out int traversaInt);
             Traversa traversa = (Traversa) traversaInt;
             return new Coordinata(traversa, colonna);
+=======
+
+        private Dictionary<Colore, IGiocatore> giocatori;
+        public void RiceviGiocatori(string nomeBianco, string nomeNero)
+        {
+            giocatori = new Dictionary<Colore, IGiocatore>();
+            giocatori.Add(Colore.Bianco, new Giocatore(nomeBianco));
+            giocatori.Add(Colore.Nero, new Giocatore(nomeNero));
+>>>>>>> upstream/master
         }
     }
 }
